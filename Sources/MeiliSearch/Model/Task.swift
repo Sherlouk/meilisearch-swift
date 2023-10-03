@@ -15,7 +15,7 @@ public struct Task: Codable, Equatable {
   public let uid: Int
 
   /// Unique ID for the current `Task`.
-  public let indexUid: String
+  public let indexUid: String?
 
   /// Returns if the task has been successful or not.
   public let status: Task.Status

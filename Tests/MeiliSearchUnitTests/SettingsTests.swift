@@ -39,6 +39,15 @@ class SettingsTests: XCTestCase {
       "synonyms": {
         "wolverine": ["xmen", "logan"],
         "logan": ["wolverine", "xmen"]
+      },
+      "typoTolerance": {
+        "enabled": true,
+        "minWordSizeForTypos": {
+          "oneTypo": 5,
+          "twoTypos": 9
+        },
+        "disableOnWords": [],
+        "disableOnAttributes": []
       }
     }
     """
@@ -77,7 +86,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let jsonData = Data(jsonString.utf8)
     let stubTask: TaskInfo = try decoder.decode(TaskInfo.self, from: jsonData)
 
@@ -106,7 +115,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let data: Data = Data(jsonString.utf8)
     let stubTask: TaskInfo = try decoder.decode(TaskInfo.self, from: data)
     session.pushData(jsonString)
@@ -167,7 +176,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -205,7 +214,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -262,7 +271,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -295,7 +304,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -361,7 +370,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -394,7 +403,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -449,7 +458,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -478,7 +487,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -535,7 +544,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -569,7 +578,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -625,7 +634,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -662,7 +671,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -716,7 +725,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -746,7 +755,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -801,7 +810,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -831,7 +840,7 @@ class SettingsTests: XCTestCase {
       """
 
     // Prepare the mock server
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     let stubTask: TaskInfo = try decoder.decode(
       TaskInfo.self,
       from: Data(jsonString.utf8))
@@ -853,15 +862,99 @@ class SettingsTests: XCTestCase {
     self.wait(for: [expectation], timeout: TESTS_TIME_OUT)
   }
 
+  // MARK: Typo Tolerance
+
+  func testGetTypoTolerance() {
+    let jsonString = """
+      {"enabled":true,"minWordSizeForTypos":{"oneTypo":3,"twoTypos":7},"disableOnWords":["of", "the"],"disableOnAttributes":["genre"]}
+      """
+
+    // Prepare the mock server
+    session.pushData(jsonString)
+
+    // Start the test with the mocked server
+    let expectation = XCTestExpectation(description: "Get displayed attribute")
+
+    self.index.getTypoTolerance { result in
+      switch result {
+      case .success(let typoTolerance):
+        XCTAssertTrue(typoTolerance.enabled)
+        XCTAssertEqual(typoTolerance.minWordSizeForTypos.oneTypo, 3)
+        XCTAssertEqual(typoTolerance.minWordSizeForTypos.twoTypos, 7)
+        XCTAssertFalse(typoTolerance.disableOnWords.isEmpty)
+        XCTAssertFalse(typoTolerance.disableOnAttributes.isEmpty)
+      case .failure:
+        XCTFail("Failed to get displayed attribute")
+      }
+      expectation.fulfill()
+    }
+
+    self.wait(for: [expectation], timeout: TESTS_TIME_OUT)
+  }
+
+  func testUpdateTypoTolerance() throws {
+    let jsonString = """
+      {"taskUid":0,"indexUid":"movies_test","status":"enqueued","type":"settingsUpdate","enqueuedAt":"2022-07-27T19:03:50.494232841Z"}
+      """
+
+    // Prepare the mock server
+    let decoder = Constants.customJSONDecoder
+    let stubTask: TaskInfo = try decoder.decode(TaskInfo.self, from: Data(jsonString.utf8))
+
+    session.pushData(jsonString)
+    let typoTolerance: TypoTolerance = .init(enabled: false)
+
+    // Start the test with the mocked server
+    let expectation = XCTestExpectation(description: "Update displayed attribute")
+
+    self.index.updateTypoTolerance(typoTolerance) { result in
+      switch result {
+      case .success(let update):
+        XCTAssertEqual(stubTask, update)
+      case .failure:
+        XCTFail("Failed to update displayed attribute")
+      }
+      expectation.fulfill()
+    }
+
+    self.wait(for: [expectation], timeout: TESTS_TIME_OUT)
+  }
+
+  func testResetTypoTolerance() throws {
+    let jsonString = """
+      {"taskUid":0,"indexUid":"movies_test","status":"enqueued","type":"settingsUpdate","enqueuedAt":"2022-07-27T19:03:50.494232841Z"}
+      """
+
+    // Prepare the mock server
+    let decoder = Constants.customJSONDecoder
+    let stubTask: TaskInfo = try decoder.decode(TaskInfo.self, from: Data(jsonString.utf8))
+    session.pushData(jsonString)
+
+    // Start the test with the mocked server
+    let expectation = XCTestExpectation(description: "Update displayed attribute")
+
+    self.index.resetTypoTolerance { result in
+      switch result {
+      case .success(let update):
+        XCTAssertEqual(stubTask, update)
+      case .failure:
+        XCTFail("Failed to update displayed attribute")
+      }
+      expectation.fulfill()
+    }
+
+    self.wait(for: [expectation], timeout: TESTS_TIME_OUT)
+  }
+
   private func buildStubSetting(from json: String) throws -> Setting {
     let data = Data(json.utf8)
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     return try decoder.decode(Setting.self, from: data)
   }
 
   private func buildStubSettingResult(from json: String) throws -> SettingResult {
     let data = Data(json.utf8)
-    let decoder = JSONDecoder()
+    let decoder = Constants.customJSONDecoder
     return try decoder.decode(SettingResult.self, from: data)
   }
 }

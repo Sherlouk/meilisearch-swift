@@ -133,7 +133,7 @@ async_guide_filter_by_ids_1: |-
     }
   }
 async_guide_filter_by_statuses_1: |-
-  client.getTasks(params: TasksQuery(statuses: ["failed", "canceled"])) { result in
+  client.getTasks(params: TasksQuery(statuses: [.failed, .canceled])) { result in
     switch result {
     case .success(let taskResult):
       print(taskResult)
@@ -142,7 +142,7 @@ async_guide_filter_by_statuses_1: |-
     }
   }
 async_guide_filter_by_types_1: |-
-  client.getTasks(params: TasksQuery(types: ["dumpCreation", "indexSwap"])) { result in
+  client.getTasks(params: TasksQuery(types: [.dumpCreation, .indexSwap])) { result in
     switch result {
     case .success(let taskResult):
       print(taskResult)
@@ -230,6 +230,16 @@ search_parameter_guide_attributes_to_search_on_1: |-
     switch result {
     case .success(let searchResult):
         print(searchResult)
+    case .failure(let error):
+        print(error)
+    }
+  }
+search_parameter_guide_show_ranking_score_1: |-
+  let searchParameters = SearchParameters(query: "dragon", showRankingScore: true)
+  client.index("movies").search(searchParameters) { (result: Result<Searchable<Movie>, Swift.Error>) in
+    switch result {
+    case .success(let searchResult):
+        print(searchResult.rankingScore)
     case .failure(let error):
         print(error)
     }
@@ -407,15 +417,6 @@ search_post_1: |-
           print(error)
       }
   }
-get_task_by_index_1: |-
-  client.index("movies").getTask(taskUid: 1) { (result) in
-        switch result {
-        case .success(let task):
-            print(task)
-        case .failure(let error):
-            print(error)
-        }
-    }
 get_task_1: |-
   client.getTask(taskUid: 1) { (result) in
         switch result {
@@ -426,10 +427,28 @@ get_task_1: |-
         }
     }
 get_all_tasks_1: |-
-  client.getTasks() { (result) in
+  client.getTasks { (result) in
       switch result {
       case .success(let tasks):
           print(tasks)
+      case .failure(let error):
+          print(error)
+      }
+  }
+delete_tasks_1: |-
+  client.deleteTasks(filter: DeleteTasksQuery(uids: [1, 2])) { (result) in
+      switch result {
+      case .success(let taskInfo):
+          print(taskInfo)
+      case .failure(let error):
+          print(error)
+      }
+  }
+cancel_tasks_1: |-
+  client.cancelTasks(filter: CancelTasksQuery(uids: [1, 2])) { (result) in
+      switch result {
+      case .success(let taskInfo):
+          print(taskInfo)
       case .failure(let error):
           print(error)
       }
